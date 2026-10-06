@@ -1,0 +1,22 @@
+# Окружение и кэши Python
+.venv/
+__pycache__/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# Сборка: программа собирается build.bat, решатель — compile.bat
+build/
+dist/
+*.exe
+*.spec.bak
+
+# Архивы: готовая сборка для передачи и реальный проект с данными школы
+*.zip
+
+# Личные настройки редактора и Claude Code
+.vscode/
+.claude/
+
+# Посторонние файлы
+guard_test_out.txt

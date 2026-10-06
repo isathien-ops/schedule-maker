@@ -1,0 +1,9 @@
+{
+    "teacherFreeTime": 10,
+    "teacherPossibleSlot": 300,
+    "softSubjectPair": 1000,
+    "weekendLesson": 200,
+    "teacherWorkDays": 100,
+    "levelsApart": 300,
+    "pairsSameDay": 100
+}

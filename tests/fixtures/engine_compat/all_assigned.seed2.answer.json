@@ -1,0 +1,806 @@
+{
+    "Поток 1 — ЕГЭ основной — Математика": [
+        [
+            {
+                "subject": "#",
+                "teachers": []
+            },
+            {
+                "subject": "#",
+                "teachers": []
+            },
+            {
+                "subject": "#",
+                "teachers": []
+            }
+        ],
+        [
+            {
+                "subject": "Математика",
+                "teachers": [
+                    "Математика #1"
+                ]
+            },
+            {
+                "subject": "#",
+                "teachers": []
+            },
+            {
+                "subject": "#",
+                "teachers": []
+            }
+        ],
+        [
+            {
+                "subject": "#",
+                "teachers": []
+            },
+            {
+                "subject": "#",
+                "teachers": []
+            },
+            {
+                "subject": "#",
+                "teachers": []
+            }
+        ],
+        [
+            {
+                "subject": "#",
+                "teachers": []
+            },
+            {
+                "subject": "#",
+                "teachers": []
+            },
+            {
+                "subject": "#",
+                "teachers": []
+            }
+        ],
+        [
+            {
+                "subject": "#",
+                "teachers": []
+            },
+            {
+                "subject": "#",
+                "teachers": []
+            },
+            {
+                "subject": "Математика",
+                "teachers": [
+                    "Математика #1"
+                ]
+            }
+        ],
+        [
+            {
+                "subject": "#",
+                "teachers": []
+            },
+            {
+                "subject": "#",
+                "teachers": []
+            },
+            {
+                "subject": "#",
+                "teachers": []
+            }
+        ]
+    ],
+    "Поток 1 — ЕГЭ основной — Русский язык": [
+        [
+            {
+                "subject": "#",
+                "teachers": []
+            },
+            {
+                "subject": "#",
+                "teachers": []
+            },
+            {
+                "subject": "Русский язык",
+                "teachers": [
+                    "Русский язык #1"
+                ]
+            }
+        ],
+        [
+            {
+                "subject": "Русский язык",
+                "teachers": [
+                    "Русский язык #1"
+                ]
+            },
+            {
+                "subject": "#",
+                "teachers": []
+            },
+            {
+                "subject": "#",
+                "teachers": []
+            }
+        ],
+        [
+            {
+                "subject": "#",
+                "teachers": []
+            },
+            {
+                "subject": "#",
+                "teachers": []
+            },
+            {
+                "subject": "#",
+                "teachers": []
+            }
+        ],
+        [
+            {
+                "subject": "#",
+                "teachers": []
+            },
+            {
+                "subject": "#",
+                "teachers": []
+            },
+            {
+                "subject": "#",
+                "teachers": []
+            }
+        ],
+        [
+            {
+                "subject": "#",
+                "teachers": []
+            },
+            {
+                "subject": "#",
+                "teachers": []
+            },
+            {
+                "subject": "#",
+                "teachers": []
+            }
+        ],
+        [
+            {
+                "subject": "#",
+                "teachers": []
+            },
+            {
+                "subject": "#",
+                "teachers": []
+            },
+            {
+                "subject": "#",
+                "teachers": []
+            }
+        ]
+    ],
+    "Поток 1 — ЕГЭ продвинутый — Математика": [
+        [
+            {
+                "subject": "#",
+                "teachers": []
+            },
+            {
+                "subject": "#",
+                "teachers": []
+            },
+            {
+                "subject": "#",
+                "teachers": []
+            }
+        ],
+        [
+            {
+                "subject": "Математика",
+                "teachers": [
+                    "Математика #2"
+                ]
+            },
+            {
+                "subject": "#",
+                "teachers": []
+            },
+            {
+                "subject": "#",
+                "teachers": []
+            }
+        ],
+        [
+            {
+                "subject": "#",
+                "teachers": []
+            },
+            {
+                "subject": "#",
+                "teachers": []
+            },
+            {
+                "subject": "#",
+                "teachers": []
+            }
+        ],
+        [
+            {
+                "subject": "#",
+                "teachers": []
+            },
+            {
+                "subject": "#",
+                "teachers": []
+            },
+            {
+                "subject": "#",
+                "teachers": []
+            }
+        ],
+        [
+            {
+                "subject": "#",
+                "teachers": []
+            },
+            {
+                "subject": "#",
+                "teachers": []
+            },
+            {
+                "subject": "Математика",
+                "teachers": [
+                    "Математика #2"
+                ]
+            }
+        ],
+        [
+            {
+                "subject": "#",
+                "teachers": []
+            },
+            {
+                "subject": "#",
+                "teachers": []
+            },
+            {
+                "subject": "#",
+                "teachers": []
+            }
+        ]
+    ],
+    "Поток 1 — ЕГЭ продвинутый — Русский язык": [
+        [
+            {
+                "subject": "#",
+                "teachers": []
+            },
+            {
+                "subject": "#",
+                "teachers": []
+            },
+            {
+                "subject": "Русский язык",
+                "teachers": [
+                    "Русский язык #2"
+                ]
+            }
+        ],
+        [
+            {
+                "subject": "Русский язык",
+                "teachers": [
+                    "Русский язык #2"
+                ]
+            },
+            {
+                "subject": "#",
+                "teachers": []
+            },
+            {
+                "subject": "#",
+                "teachers": []
+            }
+        ],
+        [
+            {
+                "subject": "#",
+                "teachers": []
+            },
+            {
+                "subject": "#",
+                "teachers": []
+            },
+            {
+                "subject": "#",
+                "teachers": []
+            }
+        ],
+        [
+            {
+                "subject": "#",
+                "teachers": []
+            },
+            {
+                "subject": "#",
+                "teachers": []
+            },
+            {
+                "subject": "#",
+                "teachers": []
+            }
+        ],
+        [
+            {
+                "subject": "#",
+                "teachers": []
+            },
+            {
+                "subject": "#",
+                "teachers": []
+            },
+            {
+                "subject": "#",
+                "teachers": []
+            }
+        ],
+        [
+            {
+                "subject": "#",
+                "teachers": []
+            },
+            {
+                "subject": "#",
+                "teachers": []
+            },
+            {
+                "subject": "#",
+                "teachers": []
+            }
+        ]
+    ],
+    "Поток 1 — ОГЭ — Математика": [
+        [
+            {
+                "subject": "#",
+                "teachers": []
+            },
+            {
+                "subject": "#",
+                "teachers": []
+            },
+            {
+                "subject": "#",
+                "teachers": []
+            }
+        ],
+        [
+            {
+                "subject": "#",
+                "teachers": []
+            },
+            {
+                "subject": "#",
+                "teachers": []
+            },
+            {
+                "subject": "#",
+                "teachers": []
+            }
+        ],
+        [
+            {
+                "subject": "#",
+                "teachers": []
+            },
+            {
+                "subject": "#",
+                "teachers": []
+            },
+            {
+                "subject": "Математика",
+                "teachers": [
+                    "Математика #1"
+                ]
+            }
+        ],
+        [
+            {
+                "subject": "#",
+                "teachers": []
+            },
+            {
+                "subject": "#",
+                "teachers": []
+            },
+            {
+                "subject": "Математика",
+                "teachers": [
+                    "Математика #1"
+                ]
+            }
+        ],
+        [
+            {
+                "subject": "#",
+                "teachers": []
+            },
+            {
+                "subject": "#",
+                "teachers": []
+            },
+            {
+                "subject": "#",
+                "teachers": []
+            }
+        ],
+        [
+            {
+                "subject": "#",
+                "teachers": []
+            },
+            {
+                "subject": "#",
+                "teachers": []
+            },
+            {
+                "subject": "#",
+                "teachers": []
+            }
+        ]
+    ],
+    "Поток 1 — ОГЭ — Физика": [
+        [
+            {
+                "subject": "#",
+                "teachers": []
+            },
+            {
+                "subject": "#",
+                "teachers": []
+            },
+            {
+                "subject": "#",
+                "teachers": []
+            }
+        ],
+        [
+            {
+                "subject": "#",
+                "teachers": []
+            },
+            {
+                "subject": "#",
+                "teachers": []
+            },
+            {
+                "subject": "#",
+                "teachers": []
+            }
+        ],
+        [
+            {
+                "subject": "#",
+                "teachers": []
+            },
+            {
+                "subject": "#",
+                "teachers": []
+            },
+            {
+                "subject": "#",
+                "teachers": []
+            }
+        ],
+        [
+            {
+                "subject": "#",
+                "teachers": []
+            },
+            {
+                "subject": "#",
+                "teachers": []
+            },
+            {
+                "subject": "#",
+                "teachers": []
+            }
+        ],
+        [
+            {
+                "subject": "#",
+                "teachers": []
+            },
+            {
+                "subject": "#",
+                "teachers": []
+            },
+            {
+                "subject": "Физика",
+                "teachers": [
+                    "Физика #1"
+                ]
+            }
+        ],
+        [
+            {
+                "subject": "#",
+                "teachers": []
+            },
+            {
+                "subject": "#",
+                "teachers": []
+            },
+            {
+                "subject": "#",
+                "teachers": []
+            }
+        ]
+    ],
+    "Поток 1 — ОГЭ — Химия": [
+        [
+            {
+                "subject": "#",
+                "teachers": []
+            },
+            {
+                "subject": "#",
+                "teachers": []
+            },
+            {
+                "subject": "#",
+                "teachers": []
+            }
+        ],
+        [
+            {
+                "subject": "#",
+                "teachers": []
+            },
+            {
+                "subject": "#",
+                "teachers": []
+            },
+            {
+                "subject": "#",
+                "teachers": []
+            }
+        ],
+        [
+            {
+                "subject": "#",
+                "teachers": []
+            },
+            {
+                "subject": "#",
+                "teachers": []
+            },
+            {
+                "subject": "#",
+                "teachers": []
+            }
+        ],
+        [
+            {
+                "subject": "#",
+                "teachers": []
+            },
+            {
+                "subject": "Химия",
+                "teachers": [
+                    "Химия #1"
+                ]
+            },
+            {
+                "subject": "#",
+                "teachers": []
+            }
+        ],
+        [
+            {
+                "subject": "#",
+                "teachers": []
+            },
+            {
+                "subject": "#",
+                "teachers": []
+            },
+            {
+                "subject": "#",
+                "teachers": []
+            }
+        ],
+        [
+            {
+                "subject": "#",
+                "teachers": []
+            },
+            {
+                "subject": "#",
+                "teachers": []
+            },
+            {
+                "subject": "#",
+                "teachers": []
+            }
+        ]
+    ],
+    "Поток 2 — ЕГЭ основной — Математика": [
+        [
+            {
+                "subject": "#",
+                "teachers": []
+            },
+            {
+                "subject": "#",
+                "teachers": []
+            },
+            {
+                "subject": "#",
+                "teachers": []
+            }
+        ],
+        [
+            {
+                "subject": "#",
+                "teachers": []
+            },
+            {
+                "subject": "#",
+                "teachers": []
+            },
+            {
+                "subject": "#",
+                "teachers": []
+            }
+        ],
+        [
+            {
+                "subject": "#",
+                "teachers": []
+            },
+            {
+                "subject": "Математика",
+                "teachers": [
+                    "Математика #3"
+                ]
+            },
+            {
+                "subject": "#",
+                "teachers": []
+            }
+        ],
+        [
+            {
+                "subject": "#",
+                "teachers": []
+            },
+            {
+                "subject": "Математика",
+                "teachers": [
+                    "Математика #3"
+                ]
+            },
+            {
+                "subject": "#",
+                "teachers": []
+            }
+        ],
+        [
+            {
+                "subject": "#",
+                "teachers": []
+            },
+            {
+                "subject": "#",
+                "teachers": []
+            },
+            {
+                "subject": "#",
+                "teachers": []
+            }
+        ],
+        [
+            {
+                "subject": "#",
+                "teachers": []
+            },
+            {
+                "subject": "#",
+                "teachers": []
+            },
+            {
+                "subject": "#",
+                "teachers": []
+            }
+        ]
+    ],
+    "Семинар ЕГЭ — Математика": [
+        [
+            {
+                "subject": "#",
+                "teachers": []
+            },
+            {
+                "subject": "#",
+                "teachers": []
+            },
+            {
+                "subject": "#",
+                "teachers": []
+            }
+        ],
+        [
+            {
+                "subject": "#",
+                "teachers": []
+            },
+            {
+                "subject": "Математика",
+                "teachers": [
+                    "Математика #2"
+                ]
+            },
+            {
+                "subject": "#",
+                "teachers": []
+            }
+        ],
+        [
+            {
+                "subject": "#",
+                "teachers": []
+            },
+            {
+                "subject": "#",
+                "teachers": []
+            },
+            {
+                "subject": "#",
+                "teachers": []
+            }
+        ],
+        [
+            {
+                "subject": "#",
+                "teachers": []
+            },
+            {
+                "subject": "#",
+                "teachers": []
+            },
+            {
+                "subject": "#",
+                "teachers": []
+            }
+        ],
+        [
+            {
+                "subject": "#",
+                "teachers": []
+            },
+            {
+                "subject": "#",
+                "teachers": []
+            },
+            {
+                "subject": "#",
+                "teachers": []
+            }
+        ],
+        [
+            {
+                "subject": "#",
+                "teachers": []
+            },
+            {
+                "subject": "#",
+                "teachers": []
+            },
+            {
+                "subject": "#",
+                "teachers": []
+            }
+        ]
+    ]
+}

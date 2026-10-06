@@ -1,0 +1,56 @@
+<!doctype html>
+<!--
+    index.html — единственная HTML-страница веб-приложения «Расписание занятий».
+    Её отдаёт маршрут index локального сервера (Flask, src/web/core.py); разметку строят скрипты
+    /static/*.js и /static/tabs/*.js, порядок важен (см. шапку core.js и список
+    в конце body); стили лежат в /static/app.css.
+    Здесь только каркас:
+      #app   — сюда скрипты рисуют стартовый экран или открытый проект;
+      #toast — всплывающее сообщение внизу экрана (функция toast() в ui.js).
+    Иконка вкладки браузера встроена прямо в <link rel="icon"> как SVG.
+-->
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Расписание занятий</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect x='1' y='2' width='14' height='13' rx='2' fill='%232f6fdb'/%3E%3Cpath d='M1 6h14M5 2v4M11 2v4' stroke='white' stroke-width='1.2'/%3E%3C/svg%3E">
+    <link rel="stylesheet" href="/static/app.css">
+    <!--
+        Тема применяется ещё до отрисовки страницы, чтобы не было «вспышки» светлой
+        темы при выбранной тёмной. Выбор («light» / «dark») хранится в localStorage
+        под ключом «schedule.theme» (его пишет setTheme() в shell.js); «auto» или
+        отсутствие значения — следовать системной теме через CSS-медиазапрос.
+    -->
+    <script>
+        try {
+            const theme = localStorage.getItem("schedule.theme");
+            if (theme === "light" || theme === "dark") document.documentElement.dataset.theme = theme;
+        } catch (error) { /* storage may be unavailable */ }
+    </script>
+</head>
+<body>
+    <div id="app"></div>
+    <div id="toast" class="toast" hidden></div>
+    <!--
+        Скрипты страницы: обычные (не модули), синхронные, выполняются строго по порядку
+        и делят одну глобальную область. Порядок важен — каждый файл при загрузке
+        пользуется только своими именами и именами из файлов выше (правила — в шапке core.js).
+        Новая вкладка — новая строка перед app.js; app.js — последним, он запускает страницу.
+    -->
+    <script src="/static/core.js"></script>
+    <script src="/static/ui.js"></script>
+    <script src="/static/domain.js"></script>
+    <script src="/static/shell.js"></script>
+    <script src="/static/projects.js"></script>
+    <script src="/static/tabs/settings.js"></script>
+    <script src="/static/tabs/classes.js"></script>
+    <script src="/static/tabs/teachers.js"></script>
+    <script src="/static/tabs/run.js"></script>
+    <script src="/static/tabs/preview.js"></script>
+    <script src="/static/tabs/view.js"></script>
+    <script src="/static/tabs/save.js"></script>
+    <script src="/static/tabs/export.js"></script>
+    <script src="/static/app.js"></script>
+</body>
+</html>

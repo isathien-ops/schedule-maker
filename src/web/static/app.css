@@ -1,0 +1,1123 @@
+/* ============================================================================
+   app.css — все стили веб-приложения «Расписание занятий».
+
+   Файл подключается из index.html; разметку строят скрипты страницы (h(), card(),
+   btn() из ui.js и отрисовщики вкладок из tabs/*.js), а здесь описано, как она выглядит.
+   Порядок: переменные темы → база → элементы управления → оболочка (боковое меню)
+   → карточки и сетки раскладки → списки → таблицы (в т.ч. неделя расписания)
+   → формы → «Запуск» → «Предпросмотр» → стартовый экран → окна и сообщения →
+   дальше — точечные добавки к отдельным вкладкам (они идут позже и поэтому
+   переопределяют более общие правила выше).
+
+   Цвета задаются только через CSS-переменные (--bg, --accent, --ok…), поэтому
+   тёмная тема — это просто другой набор значений тех же переменных.
+   Цвет предмета передаётся из скриптов (subjectHue в domain.js) переменной --hue
+   (оттенок 0–360); квадратик линейки (swatch в domain.js, оттенок — lineHue) красится
+   прямо в разметке, без переменной.
+   ============================================================================ */
+
+/* ================================================================ переменные (токены) светлой темы
+   --surface*  — фоны карточек и полос (от светлого к темнее);
+   --border*   — рамки; --text, --text-2, --muted, --faint — текст по убыванию яркости;
+   --accent*   — фирменный цвет (кнопки, выбранное);
+   --ok/--warn/--bad/--info (+ -soft — бледный фон) — цвета статусов;
+   --danger-solid — заливка красных кнопок и счётчиков с белым текстом (--bad для этого
+   не годится: в тёмной теме он светло-розовый, и белый текст на нём не читается);
+   --radius*, --shadow* — скругления и тени; --sidebar — ширина бокового меню. */
+
+:root {
+    --bg: #f4f5f7;
+    --surface: #ffffff;
+    --surface-2: #f8f9fb;
+    --surface-3: #f1f3f6;
+    --border: #e4e7ec;
+    --border-strong: #d0d5dd;
+    --text: #101828;
+    --text-2: #344054;
+    --muted: #667085;
+    --faint: #98a2b3;
+
+    --accent: #5b5fc7;
+    --accent-hover: #4f53b5;
+    --accent-soft: #eef2ff;
+    --accent-text: #3730a3;
+
+    --ok: #067647;
+    --ok-soft: #dcfae6;
+    --warn: #b54708;
+    --warn-soft: #fef0c7;
+    --bad: #b42318;
+    --bad-soft: #fee4e2;
+    --info: #175cd3;
+    --info-soft: #d1e9ff;
+    --neutral-soft: #eaecf0;
+    --danger-solid: #c8453b;
+
+    --radius-sm: 6px;
+    --radius: 10px;
+    --radius-lg: 14px;
+    --shadow-sm: 0 1px 2px rgba(16, 24, 40, .05);
+    --shadow: 0 1px 3px rgba(16, 24, 40, .08), 0 1px 2px rgba(16, 24, 40, .04);
+    --shadow-lg: 0 20px 40px -8px rgba(16, 24, 40, .18), 0 6px 12px -4px rgba(16, 24, 40, .06);
+
+    --sidebar: 248px;
+    --font: "Inter", "Segoe UI Variable Text", "Segoe UI", system-ui, -apple-system, sans-serif;
+    --mono: "Cascadia Mono", Consolas, "Courier New", monospace;
+
+    color-scheme: light;
+}
+
+/* Тёмная тема. Включается двумя способами: явно (data-theme="dark" на <html>, выбор
+   в переключателе темы) или в режиме «авто», когда тёмная тема включена в системе
+   (медиазапрос ниже). Значения в обоих блоках одинаковые — держите их синхронными. */
+:root[data-theme="dark"] {
+        --bg: #0e1014;
+        --surface: #16191f;
+        --surface-2: #1a1e25;
+        --surface-3: #21262e;
+        --border: #282d36;
+        --border-strong: #333a45;
+        --text: #eceff3;
+        --text-2: #c9cfd8;
+        --muted: #98a2b3;
+        --faint: #737d8f;
+
+        --accent: #5d5bc0;
+        --accent-hover: #6a68cc;
+        --accent-soft: #1f1e3c;
+        --accent-text: #c7c4ff;
+
+        --ok: #6fd6a0;
+        --ok-soft: #12291f;
+        --warn: #f5b546;
+        --warn-soft: #33270f;
+        --bad: #f9a19a;
+        --bad-soft: #391a19;
+        --info: #84caff;
+        --info-soft: #132744;
+        --neutral-soft: #262b34;
+        --danger-solid: #a8453d;
+
+        --shadow-sm: 0 1px 2px rgba(0, 0, 0, .4);
+        --shadow: 0 1px 3px rgba(0, 0, 0, .5);
+        --shadow-lg: 0 24px 48px -12px rgba(0, 0, 0, .7);
+
+        color-scheme: dark;
+    }
+
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+            --bg: #0e1014;
+            --surface: #16191f;
+            --surface-2: #1a1e25;
+            --surface-3: #21262e;
+            --border: #282d36;
+            --border-strong: #333a45;
+            --text: #eceff3;
+            --text-2: #c9cfd8;
+            --muted: #98a2b3;
+            --faint: #737d8f;
+
+            --accent: #5d5bc0;
+            --accent-hover: #6a68cc;
+            --accent-soft: #1f1e3c;
+            --accent-text: #c7c4ff;
+
+            --ok: #6fd6a0;
+            --ok-soft: #12291f;
+            --warn: #f5b546;
+            --warn-soft: #33270f;
+            --bad: #f9a19a;
+            --bad-soft: #391a19;
+            --info: #84caff;
+            --info-soft: #132744;
+            --neutral-soft: #262b34;
+            --danger-solid: #a8453d;
+
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, .4);
+            --shadow: 0 1px 3px rgba(0, 0, 0, .5);
+            --shadow-lg: 0 24px 48px -12px rgba(0, 0, 0, .7);
+
+            color-scheme: dark;
+    }
+}
+
+/* ================================================================ база: шрифт, заголовки, иконки
+   и мелкие служебные классы раскладки (.row — в строку, .stack — столбиком, .grow — растянуть) */
+
+* { box-sizing: border-box; }
+
+html, body {
+    margin: 0;
+    min-height: 100%;
+    background: var(--bg);
+    color: var(--text);
+    font: 14px/1.45 var(--font);
+    -webkit-font-smoothing: antialiased;
+}
+
+button, input, select, textarea { font: inherit; color: inherit; }
+svg.icon { width: 16px; height: 16px; flex: none; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+
+h1 { font-size: 22px; line-height: 1.25; letter-spacing: -.01em; margin: 0; font-weight: 650; }
+h2 { font-size: 15px; margin: 0; font-weight: 620; }
+h3 { font-size: 13px; margin: 0; font-weight: 600; color: var(--text-2); }
+b, strong { font-weight: 620; }
+
+.num { font-variant-numeric: tabular-nums; }
+.hint { color: var(--muted); font-size: 12.5px; margin: 0; line-height: 1.5; }
+.row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.grow { flex: 1; min-width: 0; }
+.stack { display: flex; flex-direction: column; gap: 12px; }
+.stack-sm { display: flex; flex-direction: column; gap: 6px; }
+
+/* ================================================================ элементы управления
+   Кнопки .btn (виды: primary — главная, danger — опасная, ghost — без рамки;
+   размеры sm/lg; icon-only — только иконка; block — во всю ширину), поля .input,
+   списки .select (своя стрелка через SVG в фоне), галочки .check и значки .badge. */
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    height: 34px;
+    padding: 0 12px;
+    border-radius: 8px;
+    border: 1px solid var(--border-strong);
+    background: var(--surface);
+    color: var(--text-2);
+    font-weight: 550;
+    cursor: pointer;
+    white-space: nowrap;
+    box-shadow: var(--shadow-sm);
+    transition: background .12s, border-color .12s, color .12s, box-shadow .12s;
+}
+
+.btn:hover:not(:disabled) { background: var(--surface-2); color: var(--text); }
+.btn:disabled { opacity: .45; cursor: not-allowed; }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+.btn.primary:hover:not(:disabled) { background: var(--accent-hover); border-color: var(--accent-hover); color: #fff; }
+.btn.danger { color: var(--bad); }
+.btn.danger:hover:not(:disabled) { background: var(--bad-soft); border-color: var(--bad-soft); color: var(--bad); }
+.btn.ghost { border-color: transparent; background: none; box-shadow: none; }
+.btn.ghost:hover:not(:disabled) { background: var(--surface-3); }
+.btn.sm { height: 28px; padding: 0 9px; font-size: 13px; border-radius: 7px; }
+.btn.lg { height: 40px; padding: 0 18px; font-size: 14.5px; }
+.btn.icon-only { width: 34px; padding: 0; }
+.btn.block { width: 100%; }
+
+.input, .select {
+    height: 34px;
+    padding: 0 10px;
+    border-radius: 8px;
+    border: 1px solid var(--border-strong);
+    background: var(--surface);
+    box-shadow: var(--shadow-sm);
+    min-width: 0;
+    transition: border-color .12s, box-shadow .12s;
+}
+
+.select { padding-right: 28px; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23667085' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m4 6 4 4 4-4'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 8px center; background-size: 16px; }
+.input:focus, .select:focus, .btn:focus-visible, textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent); }
+/* Раскрытый список .select — в стиле программы, а не браузера: светлая и тёмная тема, скругления,
+   выбранный пункт подсвечен. Работает в браузерах на Chromium 135+ (Яндекс, Chrome, Edge —
+   «настраиваемый select»); в остальных остаётся обычный список браузера. Сам элемент — прежний
+   <select>: клавиатура, экранный диктор и выбор работают как раньше. Стрелка — та же SVG в фоне,
+   стрелку браузера (::picker-icon) прячем. */
+@supports (appearance: base-select) {
+    .select, .select::picker(select) { appearance: base-select; }
+    /* Длинная подпись выбранного пункта — в одну строку и обрезается перед стрелкой (по краю содержимого,
+       не заходя под стрелку в правом отступе), как у обычного списка */
+    .select { display: inline-block; line-height: 32px; color: var(--text); white-space: nowrap; overflow: clip; overflow-clip-margin: content-box; }
+    .select::picker-icon { display: none; }
+    .select::picker(select) {
+        margin-top: 4px;
+        padding: 4px;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        background: var(--surface);
+        color: var(--text);
+        box-shadow: var(--shadow-lg);
+        /* Браузер открывает список туда, где больше места (часто вверх); у нас — вниз, вверх только если не помещается */
+        position-try-order: normal;
+        max-height: min(360px, 60vh);
+        overflow-y: auto;
+    }
+    .select option { padding: 7px 10px; border-radius: var(--radius-sm); line-height: 1.4; cursor: pointer; white-space: nowrap; }
+    .select option::checkmark { display: none; }
+    .select option:hover, .select option:focus-visible { outline: none; background: var(--surface-3); }
+    .select option:checked { background: var(--accent-soft); color: var(--accent-text); font-weight: 600; }
+    .select option:disabled { color: var(--faint); cursor: default; }
+    .select[hidden] { display: none; }
+}
+
+.input.num { text-align: right; font-variant-numeric: tabular-nums; }
+.input:disabled { cursor: not-allowed; opacity: .6; }
+
+.check { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; padding: 6px 8px; border-radius: 8px; user-select: none; }
+.check:hover { background: var(--surface-3); }
+.check input { width: 16px; height: 16px; accent-color: var(--accent); margin: 0; }
+
+.badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    height: 22px;
+    padding: 0 8px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 560;
+    background: var(--neutral-soft);
+    color: var(--text-2);
+    white-space: nowrap;
+}
+
+.badge.ok { background: var(--ok-soft); color: var(--ok); }
+.badge.warn { background: var(--warn-soft); color: var(--warn); }
+.badge.bad { background: var(--bad-soft); color: var(--bad); }
+.badge.info { background: var(--info-soft); color: var(--info); }
+.badge.accent { background: var(--accent-soft); color: var(--accent-text); }
+.badge .dot { flex-shrink: 0; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+/* Длинная пометка (например, «Этот вариант нельзя принять…» со списком курсов) переносится по строкам */
+.badge.wrap { max-width: 100%; height: auto; min-height: 22px; padding-top: 2px; padding-bottom: 2px; white-space: normal; line-height: 1.35; border-radius: 11px; }
+
+/* ================================================================ оболочка
+   .shell — сетка «боковое меню + содержимое». .sidebar — меню слева: логотип,
+   переключатель проекта, группы шагов и пункты вкладок (.nav-item, справа
+   счётчик .count). .content — область вкладки, .page-head — её шапка. */
+
+.shell { display: grid; grid-template-columns: var(--sidebar) minmax(0, 1fr); min-height: 100vh; }
+
+.sidebar {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 16px 12px;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    overflow-y: auto;
+}
+
+.brand { display: flex; align-items: center; gap: 10px; padding: 4px 8px 14px; }
+.brand-mark { width: 30px; height: 30px; border-radius: 9px; display: grid; place-items: center; background: linear-gradient(135deg, var(--accent), #8b5cf6); color: #fff; box-shadow: var(--shadow); }
+.brand-mark svg.icon { width: 18px; height: 18px; }
+.brand-name { font-weight: 650; font-size: 14px; line-height: 1.2; }
+.brand-sub { font-size: 12px; color: var(--muted); }
+
+.project-switch {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 8px 10px;
+    margin-bottom: 10px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    background: var(--surface-2);
+    cursor: pointer;
+    text-align: left;
+}
+
+.project-switch:hover { border-color: var(--border-strong); }
+.project-switch .avatar { width: 28px; height: 28px; border-radius: 8px; display: grid; place-items: center; font-weight: 650; font-size: 12px; flex: none; }
+.project-switch .label { font-size: 11.5px; color: var(--muted); }
+.project-switch .name { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.nav-group { font-size: 11px; font-weight: 650; letter-spacing: .06em; text-transform: uppercase; color: var(--faint); padding: 12px 10px 4px; display: flex; align-items: center; gap: 8px; }
+.nav-group .step { width: 16px; height: 16px; border-radius: 50%; display: grid; place-items: center; font-size: 10px; background: var(--surface-3); color: var(--muted); letter-spacing: 0; }
+
+.nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    height: 36px;
+    padding: 0 10px;
+    border: none;
+    border-radius: 8px;
+    background: none;
+    color: var(--text-2);
+    font-weight: 540;
+    cursor: pointer;
+    text-align: left;
+}
+
+.nav-item:hover { background: var(--surface-3); color: var(--text); }
+.nav-item.active { background: var(--accent-soft); color: var(--accent-text); }
+.nav-item .icon { color: var(--faint); }
+.nav-item.active .icon { color: var(--accent); }
+.nav-item .count { margin-left: auto; font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.nav-item.active .count { color: var(--accent-text); }
+
+.sidebar-bottom { margin-top: auto; padding-top: 12px; }
+.sidebar-foot { padding: 0 10px; font-size: 12px; color: var(--faint); }
+
+.content { min-width: 0; padding: 24px 28px 40px; }
+
+.page-head { display: flex; align-items: flex-start; gap: 16px; margin-bottom: 20px; }
+.page-head .titles { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+.page-head .actions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; justify-content: flex-end; }
+
+/* Узкий экран: боковое меню превращается в строку пунктов над содержимым */
+@media (max-width: 980px) {
+    .shell { grid-template-columns: minmax(0, 1fr); }
+    .sidebar { position: static; height: auto; flex-direction: row; flex-wrap: wrap; border-right: none; border-bottom: 1px solid var(--border); padding: 10px; }
+    .brand, .nav-group, .sidebar-foot { display: none; }
+    .project-switch { width: auto; margin: 0 6px 0 0; }
+    .nav-item { width: auto; }
+    .nav-item .count { margin-left: 6px; }
+    .content { padding: 16px; }
+}
+
+/* ================================================================ карточки и сетки раскладки
+   .card (шапка .card-head, тело .card-body, низ .card-foot) — основной блок страниц.
+   .grid.* — раскладки вкладок: settings (сетка времени + ограничения), side (список
+   слева + содержимое), run («Запуск»: настройки слева, запуск справа). На узких
+   экранах колонки складываются в одну. */
+
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); }
+.card-head { display: flex; align-items: center; gap: 10px; padding: 14px 16px; border-bottom: 1px solid var(--border); }
+.card-head .hint { margin-top: 2px; }
+.card-body { padding: 16px; }
+.card-body.flush { padding: 0; }
+.card-foot { display: flex; gap: 8px; align-items: center; padding: 12px 16px; border-top: 1px solid var(--border); background: var(--surface-2); border-radius: 0 0 var(--radius-lg) var(--radius-lg); flex-wrap: wrap; }
+/* Длинные пометки внизу карточки («Предпросмотр») на узком экране переносятся, а не растягивают страницу вбок */
+.card-foot > .badge { max-width: 100%; height: auto; min-height: 22px; padding-top: 2px; padding-bottom: 2px; white-space: normal; line-height: 1.35; border-radius: 11px; }
+
+.grid { display: grid; gap: 20px; align-items: start; }
+.grid.settings { grid-template-columns: minmax(0, 1.8fr) minmax(300px, 1fr); }
+.grid > .span-all { grid-column: 1 / -1; }
+.grid.side { grid-template-columns: 290px minmax(0, 1fr); }
+.grid.run { grid-template-columns: minmax(340px, 440px) minmax(0, 1fr); }
+
+@media (max-width: 1180px) { .grid.settings { grid-template-columns: minmax(0, 1fr); } }
+
+.sticky { position: sticky; top: 20px; }
+
+/* ================================================================ списки
+   Левые списки на «Преподавателях» и «Расписании»: .list-item — строка (аватар,
+   название .title, подпись .sub), .list-header — заголовок группы. */
+
+.list { display: flex; flex-direction: column; gap: 2px; padding: 6px; max-height: calc(100vh - 260px); overflow-y: auto; }
+
+.list-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 8px 10px;
+    border: none;
+    border-radius: 8px;
+    background: none;
+    text-align: left;
+    cursor: pointer;
+    color: var(--text-2);
+}
+
+.list-item:hover { background: var(--surface-3); color: var(--text); }
+.list-item.active { background: var(--accent-soft); color: var(--accent-text); }
+.list-item .main { flex: 1; min-width: 0; }
+.list-item .title { font-weight: 560; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.list-item .sub { font-size: 12px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.list-item.active .sub { color: var(--accent-text); opacity: .75; }
+.list-header { font-size: 11px; font-weight: 650; letter-spacing: .05em; text-transform: uppercase; color: var(--faint); padding: 12px 10px 4px; }
+.list-header:first-child { padding-top: 4px; }
+
+.avatar-sm { width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; font-size: 11px; font-weight: 650; flex: none; color: #fff; }
+
+.swatch { width: 10px; height: 10px; border-radius: 3px; flex: none; }
+
+/* ================================================================ таблицы
+   Общий вид таблиц (.table-wrap даёт прокрутку и рамку; шапка «прилипает» при
+   прокрутке). .data — таблицы данных (курсы, версии) с подсветкой строки. */
+
+.table-wrap { overflow: auto; border-radius: var(--radius); border: 1px solid var(--border); background: var(--surface); }
+.card-body.flush > .table-wrap { border: none; border-radius: 0 0 var(--radius-lg) var(--radius-lg); }
+
+table { border-collapse: separate; border-spacing: 0; width: 100%; }
+th, td { padding: 8px 12px; border-bottom: 1px solid var(--border); text-align: left; vertical-align: middle; }
+tbody tr:last-child td, tbody tr:last-child th { border-bottom: none; }
+thead th { position: sticky; top: 0; z-index: 2; background: var(--surface-2); font-size: 12px; font-weight: 600; color: var(--muted); white-space: nowrap; }
+tbody th { font-weight: 560; color: var(--text-2); background: var(--surface-2); white-space: nowrap; }
+td.center, th.center { text-align: center; }
+td.right, th.right { text-align: right; font-variant-numeric: tabular-nums; }
+
+.data tbody tr:hover td { background: var(--surface-2); }
+.data tr.clickable { cursor: pointer; }
+.data tr.selected td { background: var(--accent-soft) !important; }
+.data tr.selected td:first-child { box-shadow: inset 3px 0 0 var(--accent); }
+
+/* Таблица недели (weekTable в domain.js): строки — время, столбцы — дни; уроки — маленькие
+   карточки .lesson в ячейках, окрашенные по --hue предмета; .off — «нет в сетке» (штриховка). */
+.week { table-layout: fixed; min-width: 760px; }
+.week th, .week td { border-right: 1px solid var(--border); }
+.week th:last-child, .week td:last-child { border-right: none; }
+.week thead th { text-align: center; padding: 10px 6px; }
+.week thead th .day { display: block; font-size: 13px; color: var(--text); font-weight: 600; }
+.week thead th .day-sub { display: block; font-weight: 500; color: var(--faint); font-size: 11px; margin-top: 1px; }
+.week .time-col { width: 74px; }
+.week tbody th { text-align: center; font-size: 12px; font-variant-numeric: tabular-nums; color: var(--muted); padding: 8px 4px; line-height: 1.3; }
+.week tbody th b { display: block; color: var(--text); font-size: 13px; }
+.week td { padding: 6px; vertical-align: top; height: 64px; }
+.week td.off { background: repeating-linear-gradient(-45deg, var(--surface-2), var(--surface-2) 6px, var(--surface-3) 6px, var(--surface-3) 12px); color: var(--faint); font-size: 11.5px; text-align: center; vertical-align: middle; }
+
+.lessons { display: flex; flex-direction: column; gap: 4px; }
+
+.lesson {
+    --hue: 230;
+    position: relative;
+    padding: 5px 8px;
+    border-radius: 7px;
+    background: hsl(var(--hue) 85% 96%);
+    color: hsl(var(--hue) 45% 22%);
+    font-size: 12px;
+    line-height: 1.3;
+    overflow: hidden;
+}
+
+.lesson .l-tag { font-size: 10.5px; font-weight: 650; letter-spacing: .02em; text-transform: uppercase; opacity: .7; }
+.lesson .l-title { font-weight: 620; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.lesson .l-meta { display: block; opacity: .75; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* Карточки уроков в тёмной теме — явной и «авто». Фон приглушённый (малая насыщенность),
+   чтобы неделя не пестрела; цвет предмета читается по оттенку фона и цвету текста */
+:root[data-theme="dark"] .lesson { background: hsl(var(--hue) 22% 18%); color: hsl(var(--hue) 50% 87%); }
+
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .lesson { background: hsl(var(--hue) 22% 18%); color: hsl(var(--hue) 50% 87%); }
+}
+
+/* Легенда цветов под таблицами */
+.legend { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 12px; color: var(--muted); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+
+/* Ячейки-состояния: доступность преподавателя по времени и «ведёт / может вести / запрещено» по курсам.
+   ok — зелёный, warn — жёлтый, bad — красный, info — синий, neutral — серый,
+   ghost — пунктир («не ведёт»); .static — только показ, без клика. */
+.state-cell { padding: 4px !important; }
+
+.state {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    min-height: 36px;
+    width: 100%;
+    padding: 4px 8px;
+    border-radius: 8px;
+    border: 1px solid transparent;
+    font-size: 12.5px;
+    font-weight: 560;
+    cursor: pointer;
+    background: none;
+    transition: transform .08s, box-shadow .12s;
+}
+
+.state:hover { box-shadow: 0 0 0 2px var(--accent); }
+.state:active { transform: scale(.98); }
+.state.static { cursor: default; box-shadow: none; transform: none; flex-direction: column; gap: 1px; text-align: center; }
+.state .state-sub { font-weight: 450; font-size: 11px; opacity: .8; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100%; }
+.state.ok { background: var(--ok-soft); color: var(--ok); }
+.state.warn { background: var(--warn-soft); color: var(--warn); }
+.state.bad { background: var(--bad-soft); color: var(--bad); }
+.state.info { background: var(--info-soft); color: var(--info); }
+.state.neutral { background: var(--neutral-soft); color: var(--muted); }
+.state.ghost { background: var(--surface-2); color: var(--faint); border: 1px dashed var(--border-strong); }
+
+/* «Настройки»: поля сетки времени уроков (.times) и матрица пар предметов (.pairs):
+   .pair.soft — «нежелательно в одно время», .pair.hard — «нельзя», .self — диагональ. */
+.grid-input { width: 100%; height: 32px; padding: 0 2px; border: 1px solid transparent; border-radius: 7px; background: var(--surface-2); text-align: center; font-size: 12.5px; font-variant-numeric: tabular-nums; letter-spacing: -.01em; }
+.grid-input:hover { border-color: var(--border-strong); }
+.grid-input:focus { outline: none; border-color: var(--accent); background: var(--surface); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent); }
+.grid-input::placeholder { color: var(--faint); }
+.grid-input:disabled { cursor: not-allowed; opacity: .6; border-color: transparent; }
+.times { table-layout: fixed; min-width: 640px; }
+.times td { padding: 3px; }
+.times tbody th { padding: 4px 10px; width: 108px; }
+.times thead th:first-child { width: 108px; }
+
+.pairs { table-layout: fixed; }
+.pairs th, .pairs td { padding: 3px; border-right: 1px solid var(--border); text-align: center; }
+.pairs thead th { padding: 8px 4px; white-space: normal; hyphens: manual; line-height: 1.2; vertical-align: bottom; }
+.pairs thead th.subject { font-size: 12.5px; font-weight: 560; color: var(--text-2); background: var(--surface-2); }
+.pairs tbody th { text-align: left; padding: 3px 10px; font-size: 12.5px; width: 150px; }
+.pair { width: 100%; height: 28px; border-radius: var(--radius-sm); border: none; display: grid; place-items: center; cursor: pointer; background: transparent; color: var(--faint); }
+.pair svg.icon { width: 14px; height: 14px; stroke-width: 2.4; }
+.pair:hover:not(:disabled) { box-shadow: 0 0 0 2px var(--accent); }
+.pair:disabled:not(.self) { cursor: not-allowed; opacity: .6; }
+.pair.soft { background: var(--warn-soft); color: var(--warn); }
+.pair.hard { background: var(--bad-soft); color: var(--bad); }
+.pair.self { cursor: default; background: var(--surface-3); box-shadow: none; }
+
+/* ================================================================ формы
+   .field-row — строка «подпись — поле» (веса, ограничения); .form — двухколоночная
+   форма в диалогах; .checks — сетка галочек (.days — семь дней недели); .rules —
+   список жёстких правил на «Запуске»; .item-card — небольшая карточка-пункт внутри
+   карточки: своё правило на «Запуске», курс в «Что не получилось» на «Предпросмотре»,
+   строка окна «Экспортировать» (.item-card.inline — всё в одну строку). У пункта
+   .top — строка заголовка, .name — название. */
+
+.fields { display: flex; flex-direction: column; }
+.field-row { display: grid; grid-template-columns: minmax(0, 1fr) 128px; gap: 4px 14px; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--border); }
+.field-row:first-child { padding-top: 0; }
+.field-row:last-child { border-bottom: none; padding-bottom: 0; }
+.field-row .label { font-weight: 560; color: var(--text); }
+.field-row .hint { grid-column: 1 / -1; }
+
+.form { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 12px 14px; align-items: center; }
+.form > label { color: var(--text-2); font-weight: 540; }
+
+.checks { display: grid; grid-template-columns: repeat(auto-fill, minmax(165px, 1fr)); gap: 2px 6px; }
+.checks.days { grid-template-columns: repeat(7, minmax(0, 1fr)); }
+.checks.days .check { justify-content: center; flex-direction: column; gap: 4px; padding: 8px 2px; border: 1px solid var(--border); }
+
+
+.rules { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px; }
+.rules li { display: flex; gap: 10px; font-size: 13px; color: var(--text-2); line-height: 1.45; }
+.rules li .icon { color: var(--ok); margin-top: 2px; }
+
+.item-card { border: 1px solid var(--border); border-radius: var(--radius); padding: 12px; background: var(--surface-2); display: flex; flex-direction: column; gap: 8px; }
+.item-card.inline { flex-direction: row; align-items: center; gap: 12px; }
+.item-card .top { display: flex; gap: 10px; align-items: center; }
+.item-card .name { font-weight: 600; flex: 1; min-width: 0; }
+
+/* ================================================================ «Запуск»
+   .console — тёмная консоль с журналом сборки (подсветка строк c-head/c-warn/c-done/
+   c-dim), .progress — полоса прогресса, .stage-pill — карточки потоков со статусом
+   (их же использует вкладка «Курсы»), .spin — вращение иконки загрузки. */
+
+.console {
+    margin: 0;
+    height: calc(100vh - 360px);
+    min-height: 260px;
+    overflow: auto;
+    padding: 14px 16px;
+    background: #0b0d12;
+    color: #c9d1d9;
+    font: 12.5px/1.6 var(--mono);
+    white-space: pre-wrap;
+    border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+}
+
+.console .c-head { color: #a5b4fc; font-weight: 600; }
+.console .c-warn { color: #fbbf24; }
+.console .c-done { color: #6ee7b7; font-weight: 600; }
+.console .c-dim { color: #6b7280; }
+.console .c-empty { color: #6b7280; font-family: var(--font); }
+
+.progress { height: 6px; border-radius: 999px; background: var(--surface-3); overflow: hidden; }
+.progress > div { height: 100%; background: linear-gradient(90deg, var(--accent), #8b5cf6); border-radius: inherit; transition: width .4s; }
+
+.stage-pills { display: flex; flex-wrap: wrap; gap: 8px; }
+
+.stage-pill {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    background: var(--surface);
+    cursor: pointer;
+    text-align: left;
+    min-width: 150px;
+}
+
+.stage-pill:hover:not(:disabled) { border-color: var(--border-strong); background: var(--surface-2); }
+.stage-pill.active { border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent); }
+.stage-pill:disabled { cursor: not-allowed; opacity: .6; }
+.stage-pill .s-name { font-weight: 600; }
+.stage-pill .s-status { font-size: 12px; color: var(--muted); }
+.stage-pill .s-icon { width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; flex: none; }
+.stage-pill .s-icon.ok { background: var(--ok-soft); color: var(--ok); }
+.stage-pill .s-icon.warn { background: var(--warn-soft); color: var(--warn); }
+.stage-pill .s-icon.bad { background: var(--bad-soft); color: var(--bad); }
+.stage-pill .s-icon.none { background: var(--surface-3); color: var(--faint); }
+
+.spin { animation: spin 1s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ================================================================ «Предпросмотр»
+   Цвет чисел в таблице сравнения вариантов: нарушение жёсткого правила — красным, ноль — бледным. */
+
+.metric-bad { color: var(--bad); font-weight: 650; }
+.metric-zero { color: var(--faint); }
+
+/* ================================================================ стартовый экран
+   .tile-grid — сетка крупных карточек-плиток .tile: проекты на стартовом экране и
+   выгрузки на вкладке «Экспорт». У плитки .p-top — верхняя строка (аватар или иконка,
+   название .p-name, дата .p-date), .p-stats — числа под ней. .project-card — плитка
+   проекта: она целиком кнопка (наведение, фокус, корзина .p-delete); .tile.new —
+   пунктирные плитки «Создание проекта» и «Импорт проекта». */
+
+.start { min-height: 100vh; display: grid; place-items: start center; padding: 9vh 20px 40px; background: radial-gradient(1200px 500px at 50% -10%, color-mix(in srgb, var(--accent) 14%, transparent), transparent 70%), var(--bg); }
+.start-inner { width: min(980px, 100%); display: flex; flex-direction: column; gap: 28px; }
+.start-hero { display: flex; align-items: center; gap: 16px; }
+.start-hero .brand-mark { width: 52px; height: 52px; border-radius: 15px; }
+.start-hero .brand-mark svg.icon { width: 28px; height: 28px; }
+.start-hero h1 { font-size: 28px; }
+
+.tile-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
+
+.tile {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+    background: var(--surface);
+    box-shadow: var(--shadow-sm);
+    text-align: left;
+}
+
+.tile .p-top { display: flex; align-items: center; gap: 12px; }
+.tile .avatar { width: 38px; height: 38px; border-radius: 10px; display: grid; place-items: center; font-weight: 650; flex: none; }
+.tile .p-name { font-weight: 620; font-size: 15px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tile .p-date { font-size: 12px; color: var(--muted); }
+.tile .p-stats { display: flex; gap: 16px; font-size: 12.5px; color: var(--muted); }
+.tile .p-stats b { display: block; font-size: 16px; color: var(--text); font-variant-numeric: tabular-nums; }
+.tile.new { border-style: dashed; background: transparent; box-shadow: none; }
+.project-card { cursor: pointer; transition: border-color .12s, box-shadow .12s, transform .12s; }
+.project-card:hover { border-color: var(--border-strong); box-shadow: var(--shadow); transform: translateY(-1px); }
+
+/* Плитка с иконкой (iconTile() в ui.js): в карточке размер и форма — от .tile .avatar,
+   .small — плитка для строк окна «Экспортировать». Ошибка формы под полями — formError() в ui.js. */
+.avatar.icon-tile { background: var(--accent-soft); color: var(--accent); }
+.avatar.icon-tile.small { width: 34px; height: 34px; border-radius: 9px; display: grid; place-items: center; flex: none; }
+.hint.form-error { color: var(--bad); min-height: 18px; }
+
+/* ================================================================ заглушки, окна, сообщения
+   .empty — «пусто» с иконкой; .backdrop + .dialog — модальное окно (dialog() в ui.js);
+   .toast — всплывающее сообщение внизу экрана (зелёная/красная иконка). */
+
+.empty { display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center; padding: 48px 20px; color: var(--muted); }
+.empty .e-icon { width: 48px; height: 48px; border-radius: 14px; display: grid; place-items: center; background: var(--accent-soft); color: var(--accent); }
+.empty .e-icon svg.icon { width: 24px; height: 24px; }
+.empty .e-title { font-weight: 620; color: var(--text); font-size: 15px; }
+
+.backdrop { position: fixed; inset: 0; z-index: 40; display: grid; place-items: center; padding: 16px; background: rgba(16, 24, 40, .45); backdrop-filter: blur(3px); animation: fade .12s ease-out; }
+.dialog { width: min(640px, 100%); max-height: calc(100vh - 32px); display: flex; flex-direction: column; background: var(--surface); border-radius: 16px; box-shadow: var(--shadow-lg); animation: pop .14s ease-out; }
+.dialog-head { padding: 18px 20px 6px; }
+.dialog-body { padding: 10px 20px 16px; overflow: auto; }
+.dialog-foot { display: flex; justify-content: flex-end; gap: 8px; padding: 14px 20px; border-top: 1px solid var(--border); background: var(--surface-2); border-radius: 0 0 16px 16px; }
+.dialog .message { white-space: pre-line; color: var(--text-2); margin: 0; }
+
+@keyframes fade { from { opacity: 0; } }
+@keyframes pop { from { opacity: 0; transform: translateY(6px) scale(.98); } }
+
+.toast { position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%); z-index: 50; display: flex; gap: 10px; align-items: flex-start; max-width: min(560px, calc(100vw - 32px)); padding: 12px 16px; border-radius: 12px; background: #101828; color: #f2f4f7; box-shadow: var(--shadow-lg); white-space: pre-line; animation: pop .16s ease-out; }
+.toast .icon { margin-top: 2px; color: #6ee7b7; }
+.toast.error-toast .icon { color: #fda29b; }
+
+/* Скрытое сообщение не занимает места (атрибут hidden ставит toast() в ui.js) */
+.toast[hidden] { display: none; }
+
+/* Переключатель темы (авто / светлая / тёмная) в боковом меню; .start-theme — он же в углу стартового экрана */
+.theme-switch { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2px; padding: 3px; margin-bottom: 10px; border-radius: 9px; background: var(--surface-3); }
+.theme-switch button { display: inline-flex; align-items: center; justify-content: center; gap: 4px; min-width: 0; height: 28px; padding: 0 4px; border: none; border-radius: 7px; background: none; color: var(--muted); font-size: 12px; font-weight: 560; cursor: pointer; white-space: nowrap; overflow: hidden; }
+.theme-switch button:hover { color: var(--text); }
+.theme-switch button.active { background: var(--surface); color: var(--text); box-shadow: var(--shadow-sm); }
+.theme-switch svg.icon { width: 14px; height: 14px; }
+
+/* Переключатель-сегмент (stageSwitch в domain.js): выбор потока на «Предпросмотре».
+   Тот же вид, что у переключателя темы: подложка и подсвеченная выбранная кнопка */
+.segmented { display: inline-flex; flex-wrap: wrap; gap: 2px; padding: 3px; border-radius: 9px; background: var(--surface-3); }
+.segmented button { height: 30px; padding: 0 14px; border: none; border-radius: 7px; background: none; color: var(--muted); font-size: 13px; font-weight: 560; cursor: pointer; white-space: nowrap; }
+.segmented button:hover { color: var(--text); }
+.segmented button.active { background: var(--surface); color: var(--text); box-shadow: var(--shadow-sm); cursor: default; }
+.segmented button:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.start-theme { position: fixed; top: 16px; right: 16px; width: 240px; }
+
+/* Круглая «i»; пояснение к ней показывает общий элемент #tip (showTip в ui.js),
+   который showTip ставит по координатам рядом с «i» */
+.info-dot {
+    position: relative;
+    display: inline-grid;
+    place-items: center;
+    width: 16px;
+    height: 16px;
+    flex: none;
+    border-radius: 50%;
+    border: 1.5px solid var(--faint);
+    color: var(--muted);
+    font: italic 700 10px/1 Georgia, serif;
+    cursor: help;
+    user-select: none;
+}
+
+.info-dot:hover, .info-dot:focus-visible { border-color: var(--accent); color: var(--accent); outline: none; }
+
+/* Сама всплывающая подсказка: тёмный прямоугольник, не перехватывает мышь (pointer-events: none) */
+#tip {
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 1000;
+    width: max-content;
+    max-width: min(300px, calc(100vw - 24px));
+    padding: 10px 12px;
+    border-radius: 10px;
+    background: #101828;
+    color: #f2f4f7;
+    font: 400 12.5px/1.5 var(--font);
+    font-style: normal;
+    white-space: normal;
+    text-align: left;
+    text-transform: none;
+    letter-spacing: 0;
+    box-shadow: var(--shadow-lg);
+    pointer-events: none;
+}
+
+#tip[hidden] { display: none; }
+#tip.shown { animation: tip-in .12s ease-out; }
+
+@keyframes tip-in { from { opacity: 0; transform: translateY(-4px); } }
+
+/* «Курсы»: потоки и линейки рядами карточек / «чипсов»; .dates-row — даты выбранного потока */
+.chip-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: stretch; }
+.chip-sep { align-self: center; padding: 0 6px 0 12px; margin-left: 4px; border-left: 1px solid var(--border); font-size: 11px; font-weight: 650; letter-spacing: .05em; text-transform: uppercase; color: var(--faint); }
+.stage-pill .badge { margin-left: 6px; }
+
+.chip { display: inline-flex; align-items: center; gap: 8px; height: 36px; padding: 0 8px 0 14px; border-radius: 999px; border: 1px solid var(--border); background: var(--surface); color: var(--text-2); font-weight: 560; cursor: pointer; }
+.chip:hover { border-color: var(--border-strong); background: var(--surface-2); }
+.chip.active { border-color: var(--accent); background: var(--accent-soft); color: var(--accent-text); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 14%, transparent); }
+
+.dates-row { display: flex; flex-wrap: wrap; gap: 12px 24px; align-items: center; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border); color: var(--text-2); font-weight: 540; }
+.dates-title { font-weight: 620; color: var(--text); margin-right: 4px; }
+
+/* Заголовки с круглой «i» */
+/* «i» течёт вместе с текстом: остаётся сразу после последнего слова, даже если заголовок переносится */
+.title-row { display: inline; }
+/* По вертикали — по центру заглавных букв текста, к которому относится */
+.title-row .info-dot { margin-left: 7px; vertical-align: middle; position: relative; top: -0.12em; }
+div.title-row, p.title-row, label.title-row, span.label.title-row { display: block; }
+h1.title-row .info-dot { width: 18px; height: 18px; font-size: 11px; }
+
+.status-line { display: flex; align-items: center; gap: 8px; margin: 0; padding: 12px 16px; border-bottom: 1px solid var(--border); color: var(--warn); background: var(--warn-soft); font-size: 13px; }
+
+.nowrap { white-space: nowrap; }
+.swatch { display: inline-block; vertical-align: 0; }
+h2 .swatch { margin-right: 2px; }
+h2 .badge { vertical-align: 1px; }
+
+/* Заголовки с «i» переносятся, а не обрезаются многоточием — иначе «i» пропала бы */
+.p-name.title-row { overflow: visible; white-space: normal; }
+
+/* Таблица вариантов на «Предпросмотре»: правила — строки, варианты — столбцы;
+   столбец выбранного варианта подсвечен; первая колонка с правилами «прилипает» слева */
+.variants th, .variants td { padding: 9px 12px; }
+.variants th.rule { text-align: left; font-weight: 560; color: var(--text); background: var(--surface); white-space: normal; min-width: 220px; position: sticky; left: 0; z-index: 1; }
+.variants thead th.rule { background: var(--surface-2); color: var(--muted); font-weight: 600; z-index: 3; }
+.variants .pick { cursor: pointer; min-width: 112px; }
+.variants td.pick:hover { background: var(--surface-2); }
+.variants .pick.selected { background: var(--accent-soft); }
+.variants thead .pick.selected { box-shadow: inset 0 3px 0 var(--accent); color: var(--accent-text); }
+.variants .variant-head { vertical-align: top; white-space: nowrap; }
+.variants .v-name { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 650; color: var(--text); }
+.variants .v-badges { display: flex; justify-content: center; gap: 4px; flex-wrap: wrap; margin-top: 4px; min-height: 20px; }
+.variants .total-row td, .variants .total-row th { border-bottom: 2px solid var(--border-strong); }
+
+@media (max-width: 1300px) { .variants th, .variants td { padding: 6px 3px; } }
+
+/* Значки предметов в цвете предмета (том же, что у его преподавателей и уроков) — светлая и тёмная тема */
+.badge.subject { background: hsl(var(--hue) 75% 93%); color: hsl(var(--hue) 55% 32%); }
+:root[data-theme="dark"] .badge.subject { background: hsl(var(--hue) 35% 22%); color: hsl(var(--hue) 75% 80%); }
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .badge.subject { background: hsl(var(--hue) 35% 22%); color: hsl(var(--hue) 75% 80%); }
+}
+
+/* Значки легенды и другие элементы с подсказкой (data-tip) объясняют себя при наведении */
+.has-tip { position: relative; cursor: help; }
+.has-tip:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* Курс уже идёт: преподаватель и время показаны простым текстом с замочком */
+.locked { display: inline-flex; align-items: center; gap: 6px; flex-wrap: wrap; color: var(--text-2); font-weight: 540; }
+.locked > .icon { color: var(--faint); }
+
+/* Стартовый экран: кнопка удаления проекта видна при наведении (на сенсорных экранах — всегда) */
+.project-card .p-delete { flex: none; opacity: 0; transition: opacity .12s; }
+.project-card:hover .p-delete, .project-card:focus-within .p-delete, .project-card .p-delete:focus-visible { opacity: 1; }
+@media (hover: none) { .project-card .p-delete { opacity: 1; } }
+.project-card:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* Необратимые действия: залитая красная кнопка */
+.btn.solid-danger { background: var(--danger-solid); border-color: var(--danger-solid); color: #fff; }
+.btn.solid-danger:hover:not(:disabled) { filter: brightness(1.08); }
+
+/* Курсы преподавателя: таблица потоков, под ней — курсы без потока (разделены линией) */
+.course-tables > .table-wrap + .table-wrap { border-top: 1px solid var(--border); }
+
+/* Вкладки этапов с датами (время преподавателя, варианты над неделей на «Предпросмотре») */
+.stage-tabs { display: flex; flex-wrap: wrap; gap: 4px; padding: 3px; border-radius: 10px; background: var(--surface-3); }
+.stage-tab { display: flex; flex-direction: column; align-items: flex-start; gap: 1px; padding: 6px 12px; border: 0; border-radius: 8px;
+    background: transparent; color: var(--text-2); font: inherit; cursor: pointer; text-align: left; }
+.stage-tab:hover:not(.active) { background: color-mix(in srgb, var(--surface) 60%, transparent); color: var(--text); }
+.stage-tab.active { background: var(--surface); color: var(--text); box-shadow: var(--shadow-sm, 0 1px 2px rgba(0,0,0,.12)); }
+.stage-tab:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.stage-tab .t-name { font-weight: 620; font-size: 13px; white-space: nowrap; }
+.stage-tab.active .t-name { color: var(--accent-text); }
+.stage-tab .t-dates { font-size: 11.5px; color: var(--muted); white-space: nowrap; font-variant-numeric: tabular-nums; }
+
+/* Время преподавателя: отметка с подписью его урока в этом этапе; два урока одновременно — красная рамка */
+.state.with-lesson { flex-direction: column; gap: 1px; }
+.state > span:first-child { display: inline-flex; align-items: center; gap: 6px; }
+.state.static.bad { box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--bad) 45%, transparent); }
+
+/* «Расписание»: карточки проблем (преподаватель на двух уроках одновременно и т.п.) */
+.clash-card { border-color: color-mix(in srgb, var(--bad) 28%, var(--border)); margin-bottom: 20px; }
+.clash-card .card-head h2 { color: var(--bad); }
+.clash-list { margin: 0; padding: 0; list-style: none; display: grid; gap: 6px; }
+.clash-list li { display: grid; grid-template-columns: minmax(160px, auto) 1fr; gap: 12px; font-size: 13px; }
+.clash-list li span { color: var(--text-2); }
+@media (max-width: 700px) { .clash-list li { grid-template-columns: 1fr; gap: 2px; } }
+
+/* «Курсы»: выбрано / закреплено, но ещё не попало в принятое расписание — жёлтая пометка */
+.stack-xs { display: grid; gap: 4px; }
+.pending-note { display: inline-flex; align-items: flex-start; gap: 5px; font-size: 11.5px; line-height: 1.35; color: var(--warn); }
+.pending-note .icon { width: 13px; height: 13px; flex: none; margin-top: 1px; }
+
+/* «Запуск»: журнал сборки свёрнут под «Подробности» */
+.log-details > summary { cursor: pointer; color: var(--muted); font-size: 13px; font-weight: 560; padding: 4px 0 10px; }
+.log-details > summary:hover { color: var(--text); }
+.log-details[open] > summary { padding-bottom: 8px; }
+
+/* Окна поуже: боковой список / настройки запуска встают над содержимым, а не сжимают его */
+@media (max-width: 1200px) {
+    .grid.side, .grid.run { grid-template-columns: minmax(0, 1fr); }
+    .grid.side > .card:first-child .card-body { max-height: 55vh; overflow: auto; }
+}
+
+/* Заголовки карточек и их кнопки переносятся, а не сжимают заголовок */
+.card-head { flex-wrap: wrap; row-gap: 10px; }
+.card-head > .grow { min-width: 200px; }
+
+/* Карточки уроков: предмет переносится максимум на две строки (длинные слова — по
+   мягким переносам из hyphenate() в domain.js), а не обрезается */
+.lesson .l-title { white-space: normal; text-overflow: clip; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; hyphens: manual; line-height: 1.25; }
+.lesson .l-meta { white-space: normal; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; hyphens: auto; line-height: 1.25; }
+
+/* Узкие окна: неделя помещается без горизонтальной прокрутки (названия переносятся в ячейках) */
+@media (max-width: 1200px) {
+    .week { min-width: 640px; }
+    .week .time-col { width: 58px; }
+    .week td { padding: 4px; }
+    .lesson { padding-right: 4px; }
+}
+
+/* Низ карточки времени преподавателя: легенда слева, кнопка копирования отметок справа */
+.card-foot .legend.grow { flex: 1; }
+
+/* Вкладки вариантов над неделей: значки «лучший» / «принят» рядом с названием */
+.stage-tab .t-name { display: inline-flex; align-items: center; gap: 6px; }
+.stage-tab .t-name .badge { font-size: 11px; padding: 0 6px; font-weight: 560; }
+
+/* Длинные тексты в значках и ячейках переносятся, а не вылезают за край; кликабельные строки списков проблем */
+.card-head .badge { white-space: normal; text-align: right; }
+.state.static { white-space: normal; min-width: 0; }
+.state.static > span:first-child { flex-wrap: wrap; justify-content: center; text-align: center; }
+.state .state-sub { white-space: normal; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; text-align: center; }
+.clash-list li.clickable { cursor: pointer; border-radius: var(--radius-sm); padding: 2px 4px; margin: 0 -4px; }
+.clash-list li.clickable:hover { background: var(--surface-2); }
+.warn-card { border-color: color-mix(in srgb, var(--warn) 30%, var(--border)); }
+.warn-card .card-head h2 { color: var(--warn); }
+
+/* «Запуск»: галочка «оставить уже принятые уроки» (keep mode) рядом с кнопкой сборки */
+.keep-check { font-size: 12.5px; color: var(--text-2); max-width: 220px; }
+/* Под галочкой — сколько уроков останется на месте и сколько расставит программа */
+.keep-box { max-width: 220px; }
+.keep-forecast { font-size: 12px; padding: 0 8px; }
+/* «Расписание» в узком окне: список потоков/линеек — короткий прокручиваемый блок, неделя остаётся на виду */
+@media (max-width: 1200px) { .grid.side > .card.view-list .card-body { max-height: 240px; } }
+
+/* Боковое меню: красный кружок — сколько проблем на «Расписании» требуют внимания (attentionCount) */
+.nav-alert { margin-left: auto; min-width: 20px; height: 20px; padding: 0 6px; border-radius: 999px; background: var(--danger-solid); color: #fff; font-size: 11.5px; font-weight: 650; display: inline-grid; place-items: center; }
+.nav-alert + .count { margin-left: 6px; }
+/* «Предпросмотр»: урок, которого ещё нет в принятом расписании, — пунктирная рамка */
+.lesson.fresh { outline: 1.5px dashed hsl(var(--hue) 60% 45%); outline-offset: -1.5px; }
+
+/* Узкий «Запуск»: сначала выбор и запуск потока, настройки ниже; кликабельные статичные ячейки */
+@media (max-width: 1200px) { .grid.run > .sticky { order: -1; } }
+.state.static.clickable { cursor: pointer; }
+
+/* Карточки .sticky-card («Курсы», неделя на «Расписании»): шапка прилипает к верху окна,
+   строка заголовков таблицы — под ней (--card-head ставит stickyHeads() в shell.js). В широком
+   окне таблица не прокручивается сама по себе, иначе заголовки прилипали бы внутри неё */
+.sticky-card > .card-head { position: sticky; top: 0; z-index: 6; background: var(--surface); border-radius: var(--radius-lg) var(--radius-lg) 0 0; }
+@media (min-width: 1000px) {
+    .sticky-card .table-wrap { overflow: visible; }
+    .sticky-card thead th { top: var(--card-head, 0px); }
+}
+
+/* «Преподаватели»: карточка с именем преподавателя прилипает к верху окна при прокрутке */
+.teacher-head { position: sticky; top: 0; z-index: 6; box-shadow: 0 6px 12px -8px rgba(0, 0, 0, 0.18); }
+/* Строка дней таблицы «Когда удобно» — сразу под ней (--teacher-head ставит stickyHeads() в shell.js) */
+@media (min-width: 1000px) {
+    .teacher-week .table-wrap { overflow: visible; }
+    .teacher-week thead th { top: var(--teacher-head, 0px); }
+}
+
+/* «Предпросмотр»: пояснение над неделей, что значат уроки в пунктирной рамке */
+.fresh-legend { display: flex; align-items: center; gap: 10px; padding: 10px 16px; font-size: 13px; color: var(--muted); border-bottom: 1px solid var(--border); }
+.fresh-sample { flex: none; width: 22px; height: 14px; border-radius: 4px; outline: 1.5px dashed var(--muted); outline-offset: -1.5px; }
+
+/* «Предпросмотр»: причина проблемы урока на его карточке («Одновременно с: Физика», «Урок в выходной») */
+.lesson .l-issue { display: block; margin-top: 4px; font-size: 11px; line-height: 1.25; font-weight: 600; color: var(--bad); }
+
+/* «Предпросмотр»: шапка недели (варианты, «Принять», линейка) и строка дней прилипают к верху экрана.
+   Таблица недели здесь не прокручивается сама по себе, иначе строка дней прилипала бы внутри неё */
+.preview-week > .week-head { position: sticky; top: 0; z-index: 6; background: var(--surface); border-radius: var(--radius-lg) var(--radius-lg) 0 0; }
+.preview-week .week-head h2 { font-size: 15px; }
+@media (min-width: 1000px) {
+    .preview-week .table-wrap { overflow: visible; }
+    .preview-week .week thead th { top: var(--week-head, 0px); }
+}
+.line-filter { flex-basis: 100%; display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.line-filter-label { font-size: 12.5px; color: var(--muted); margin-right: 4px; }
+.line-chip { border: 1px solid var(--border); background: var(--surface); color: var(--text-2); border-radius: 999px; padding: 4px 11px; font: inherit; font-size: 12.5px; cursor: pointer; }
+.line-chip:hover { border-color: var(--border-strong); }
+.line-chip.active { background: var(--accent-soft); border-color: color-mix(in srgb, var(--accent) 45%, transparent); color: var(--accent-text); font-weight: 600; }
+
+/* «Предпросмотр»: отклонённые варианты — бледные (в таблице и в переключателе над неделей) */
+.variants th.rejected, .variants td.rejected { opacity: .45; }
+.variants th.rejected.selected, .variants td.rejected.selected { opacity: .75; }
+.stage-tab.rejected:not(.active) { opacity: .5; }
+
+/* «Отклонить» — кнопка той же формы, что «Принять», но мягкая: бледно-красный фон
+   и красный текст, чтобы не резала глаз рядом с «Принять» */
+.btn.reject { background: var(--bad-soft); border-color: transparent; color: var(--bad); box-shadow: none; }
+.btn.reject:hover:not(:disabled) { background: color-mix(in srgb, var(--bad) 18%, var(--surface)); border-color: transparent; color: var(--bad); }
+
+/* ================================================================ шлифовка вида (обе темы)
+   Точечные правки поверх правил выше: аватары, «пустые» шапки карточек, кнопки удаления,
+   шапка недели на «Предпросмотре» в узком окне, карточка запуска, окна в тёмной теме. */
+
+/* Цветные аватары с инициалами (avatar() в ui.js передаёт только оттенок --hue).
+   В светлой теме — мягкий насыщенный цвет, в тёмной — темнее и глуше, чтобы не «светились» */
+.avatar-sm.hued, .avatar.hued { background: hsl(var(--hue) 50% 52%); color: #fff; }
+:root[data-theme="dark"] .avatar-sm.hued, :root[data-theme="dark"] .avatar.hued { background: hsl(var(--hue) 34% 40%); color: #f2f4f7; }
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .avatar-sm.hued, :root:not([data-theme="light"]) .avatar.hued { background: hsl(var(--hue) 34% 40%); color: #f2f4f7; }
+}
+
+/* Пунктир «урок новый» в тёмной теме — светлее, иначе он теряется на тёмной карточке */
+:root[data-theme="dark"] .lesson.fresh { outline-color: hsl(var(--hue) 50% 60%); }
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .lesson.fresh { outline-color: hsl(var(--hue) 50% 60%); }
+}
+
+/* Карточка, у которой есть только шапка (например, карточка запуска потока): без линии под шапкой,
+   иначе внизу карточки видна лишняя черта поверх скругления */
+.card > .card-head:last-child { border-bottom: none; }
+
+/* Кнопки-корзины без подписи (удалить предмет, линейку, поток, проект) — серые и не рябят
+   столбцом красных значков; краснеют при наведении на строку таблицы или на саму кнопку */
+.btn.ghost.danger.icon-only { color: var(--faint); }
+.btn.ghost.danger.icon-only:hover:not(:disabled), .btn.ghost.danger.icon-only:focus-visible,
+.data tr:hover .btn.ghost.danger.icon-only:not(:disabled) { color: var(--bad); }
+
+/* «Запуск»: в карточке запуска пояснение занимает всю ширину, а кнопки встают строкой под ним;
+   главная кнопка («Составить варианты» / «Остановить») — справа */
+.grid.run > .sticky > .card:last-child > .card-head > .grow { flex-basis: 100%; }
+.grid.run > .sticky > .card:last-child > .card-head > .btn.primary,
+.grid.run > .sticky > .card:last-child > .card-head > .btn.danger { margin-left: auto; }
+
+/* «Предпросмотр» в узком окне: в первой строке шапки недели — заголовок, «Принять» и «Отклонить»,
+   переключатель вариантов — второй строкой (а не «Отклонить» одна внизу). Перенос строки делает
+   пустой псевдоэлемент на всю ширину; отрицательный отступ убирает лишний промежуток от него */
+@media (max-width: 1300px) {
+    .preview-week > .week-head::before { content: ""; order: 1; flex-basis: 100%; height: 0; margin-top: -10px; }
+    .preview-week > .week-head > .stage-tabs { order: 2; }
+    .preview-week > .week-head > .line-filter { order: 3; }
+}
+
+/* «Версии»: длинный значок «Уроков в неделю во всех потоках вместе: N» переносится внутри карточки */
+.card-body > .stack > .row > .badge { max-width: 100%; height: auto; min-height: 22px; padding-top: 2px; padding-bottom: 2px; white-space: normal; line-height: 1.35; border-radius: 11px; }
+
+/* Окна в тёмной теме: тонкая рамка отделяет окно от затемнённой страницы под ним */
+:root[data-theme="dark"] .dialog { box-shadow: 0 0 0 1px var(--border-strong), var(--shadow-lg); }
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .dialog { box-shadow: 0 0 0 1px var(--border-strong), var(--shadow-lg); }
+}
+
+/* «Предпросмотр»: «одинаково» под равными лучшими оценками в строке «Неудобства, всего» */
+.variants .tie-note { display: block; margin-top: 2px; font-size: 11px; font-weight: 500; color: var(--muted); }
+
+/* Кнопки с всплывающим пояснением («Принять», «Отклонить»): обычный курсор-рука, а не «?» */
+.btn.has-tip { cursor: pointer; }
+
+/* Ползунки «Неважно … Очень важно» и «Быстро … Очень тщательно» (levelSlider в tabs/run.js):
+   подпись строки сверху, под ней — название деления, ползунок и подписи делений */
+.field-row.slider-row { grid-template-columns: 1fr; gap: 8px; }
+.level-slider { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.level-head { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; font-size: 13px; }
+.level-head b { color: var(--accent-text); font-weight: 650; }
+.level-note { color: var(--muted); font-size: 12px; }
+/* Своя дорожка: закрашена до ползунка (--fill задаёт levelSlider в tabs/run.js), спокойная в обеих темах */
+.level-slider input[type="range"] {
+    -webkit-appearance: none; appearance: none; width: 100%; height: 6px; margin: 8px 0 6px; border-radius: 999px; cursor: pointer;
+    background: linear-gradient(to right, var(--accent) 0 var(--fill, 0%), var(--surface-3) var(--fill, 0%) 100%);
+    box-shadow: inset 0 0 0 1px var(--border);
+}
+.level-slider input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none; appearance: none; width: 16px; height: 16px; border-radius: 50%;
+    background: var(--surface); border: 2px solid var(--accent); box-shadow: var(--shadow-sm);
+}
+.level-slider input[type="range"]::-moz-range-thumb { width: 14px; height: 14px; border-radius: 50%; background: var(--surface); border: 2px solid var(--accent); }
+.level-slider input[type="range"]:disabled { cursor: not-allowed; opacity: .5; }
+.level-slider input[type="range"]:focus-visible { outline: none; box-shadow: inset 0 0 0 1px var(--border), 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent); }
+.level-ticks { position: relative; height: 15px; font-size: 11px; color: var(--faint); }
+.level-ticks span { position: absolute; top: 0; white-space: nowrap; }
+.item-card .level-slider.compact { padding: 0 2px; }
+
+/* Подпись под названием деления можно щёлкнуть и вписать точное число (тихо: пунктирное подчёркивание) */
+.level-note.editable { cursor: pointer; text-decoration: underline dotted color-mix(in srgb, var(--muted) 60%, transparent); text-underline-offset: 3px; }
+.level-note.editable:hover, .level-note.editable:focus-visible { color: var(--text-2); outline: none; }
+.level-input { width: 110px; height: 26px; padding: 0 8px; font: inherit; font-size: 12px; border: 1px solid var(--accent); border-radius: var(--radius-sm); background: var(--surface); color: var(--text); }
+
+/* Не критичная подпись на карточке урока («В тот же день: …») — жёлтым, а не красным */
+.lesson .l-issue.warn { color: #8a6100; font-weight: 500; }
+:root[data-theme="dark"] .lesson .l-issue.warn { color: #e0b43c; }
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .lesson .l-issue.warn { color: #e0b43c; }
+}
+
+/* Подпись «пока идёт сборка, эти настройки не меняются» (buildingNote в domain.js) над закрытыми карточками */
+.build-note { display: flex; align-items: flex-start; gap: 8px; margin: 0; padding: 12px 16px; border: 1px solid color-mix(in srgb, var(--info) 28%, var(--border)); border-radius: var(--radius-lg); background: var(--info-soft); color: var(--text-2); font-size: 13px; line-height: 1.45; }
+.build-note svg.icon { flex: none; margin-top: 1px; color: var(--info); }
+
+/* «Присоединяется к» (.spec/joint-lines/SPEC.md): выбор в шапке курсов линейки (.joint-pick) и пометка
+   у линейки-источника (.joint-with), закрытые ячейки курса-копии «как в Потоке N» (.joint-field),
+   мелкие пометки (.joint-note), значок у линейки (.chip-joint) и подпись общего урока на карточке
+   урока (.l-joint). Значок цепи — цветом акцента, чтобы отличался от замочка «уже идёт». */
+.joint-head { gap: 8px 16px; justify-content: flex-end; }
+.joint-pick { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 560; color: var(--text-2); white-space: nowrap; }
+.joint-pick .select { min-width: 130px; }
+.joint-pick .select:disabled { cursor: not-allowed; opacity: .6; }
+.joint-note { display: block; margin-top: 2px; font-size: 11.5px; font-weight: 500; line-height: 1.35; color: var(--muted); }
+.joint-note.joint-with { display: inline-flex; align-items: center; gap: 6px; margin-top: 0; font-size: 13px; color: var(--text-2); }
+.joint-note.joint-with .icon, .chip .chip-joint, .locked.joint-field > .icon { color: var(--accent-text); }
+.chip .chip-joint { width: 14px; height: 14px; margin-left: -2px; }
+.locked.joint-field { row-gap: 2px; }
+.locked.joint-field > .joint-note { flex-basis: 100%; margin-top: 0; }
+td.center .locked.joint-field { justify-content: center; text-align: center; }
+.lesson .l-joint { display: flex; align-items: center; gap: 4px; margin-top: 2px; font-size: 11px; font-weight: 600; line-height: 1.25; opacity: .85; text-wrap: balance; }
+.lesson .l-joint .icon { width: 12px; height: 12px; flex: none; }
+
+/* «Предпросмотр», смена преподавателя (.spec/teacher-swap/SPEC.md): блок «Кто ведёт» под правилами
+   таблицы вариантов (tfoot.teachers, teachersFoot в tabs/preview.js) отделён чертой; ячейка, где курс
+   в варианте ведёт не тот, кто в принятом расписании (.teacher-changed), — жёлтым, как «сдвинется»;
+   метка «новый преподаватель» на карточке урока (.teacher-new) — маленькой плашкой цвета акцента:
+   это пометка, а не проблема урока, поэтому не красным, как остальные подписи .l-issue. У жёлтой ячейки
+   селектор с td: он сильнее .variants td.pick:hover, и заливка не пропадает под мышью, когда всплывает
+   подсказка «Сейчас ведёт» */
+.variants tfoot.teachers .group-row > * { border-top: 2px solid var(--border-strong); padding-top: 12px; font-weight: 650; color: var(--muted); }
+.variants tfoot.teachers tr:last-child > * { border-bottom: none; }
+.variants td.pick.teacher-changed { background: var(--warn-soft); color: var(--warn); font-weight: 650; }
+.variants td.pick.teacher-changed.selected { box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--accent) 45%, transparent); }
+.lesson .teacher-new { padding: 1px 4px; border-radius: 4px; background: color-mix(in srgb, var(--surface) 80%, transparent); color: var(--accent-text); font-weight: 600; -webkit-box-decoration-break: clone; box-decoration-break: clone; }

@@ -1,0 +1,114 @@
+{
+    "Поток 1 — ЕГЭ основной — Математика": [
+        [
+            {
+                "subject": "Математика",
+                "teachers": [
+                    "Смирнова"
+                ]
+            },
+            {
+                "subject": "#",
+                "teachers": []
+            }
+        ],
+        [
+            {
+                "subject": "Математика",
+                "teachers": [
+                    "Смирнова"
+                ]
+            },
+            {
+                "subject": "#",
+                "teachers": []
+            }
+        ],
+        [
+            {
+                "subject": "#",
+                "teachers": []
+            },
+            {
+                "subject": "#",
+                "teachers": []
+            }
+        ],
+        [
+            {
+                "subject": "#",
+                "teachers": []
+            },
+            {
+                "subject": "#",
+                "teachers": []
+            }
+        ],
+        [
+            {
+                "subject": "#",
+                "teachers": []
+            },
+            {
+                "subject": "#",
+                "teachers": []
+            }
+        ]
+    ],
+    "Поток 1 — ЕГЭ продвинутый — Математика": [
+        [
+            {
+                "subject": "#",
+                "teachers": []
+            },
+            {
+                "subject": "Математика",
+                "teachers": [
+                    "Иванова"
+                ]
+            }
+        ],
+        [
+            {
+                "subject": "#",
+                "teachers": []
+            },
+            {
+                "subject": "#",
+                "teachers": []
+            }
+        ],
+        [
+            {
+                "subject": "#",
+                "teachers": []
+            },
+            {
+                "subject": "#",
+                "teachers": []
+            }
+        ],
+        [
+            {
+                "subject": "#",
+                "teachers": []
+            },
+            {
+                "subject": "#",
+                "teachers": []
+            }
+        ],
+        [
+            {
+                "subject": "#",
+                "teachers": []
+            },
+            {
+                "subject": "Математика",
+                "teachers": [
+                    "Иванова"
+                ]
+            }
+        ]
+    ]
+}

@@ -1,0 +1,9 @@
+# Для разработки и сборки exe (build.bat) — сверх requirements.txt
+-r requirements.txt
+pyinstaller==6.22.3
+# Замер покрытия тестами (подробно — README, «Тесты и проверки»): .venv\Scripts\python -m coverage run --branch --source=src -m unittest discover tests
+coverage==7.16.2
+# Браузерные тесты страницы (tests/ui); без него они пропускаются
+playwright==1.63.0
+# Проверка исходников на неиспользуемые импорты и имена: .venv\Scripts\python -m pyflakes src web.py tests tools
+pyflakes==4.0.2
